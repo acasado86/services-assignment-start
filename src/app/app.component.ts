@@ -1,21 +1,27 @@
-import { Component } from '@angular/core';
+import { CounterService } from './counter.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  activeUsers = ['Max', 'Anna'];
-  inactiveUsers = ['Chris', 'Manu'];
+export class AppComponent implements OnInit {
+  actives: number;
+  inactives: number;
 
-  onSetToInactive(id: number) {
-    this.inactiveUsers.push(this.activeUsers[id]);
-    this.activeUsers.splice(id, 1);
+  constructor(private counterService: CounterService) {}
+
+  ngOnInit() {
+    this.actives = this.counterService.inactiveToActive;
+    this.inactives = this.counterService.activeToInactive;
+    this.counterService.updateEvent.subscribe(
+      (status: string) => {
+        alert(status);
+        this.actives = this.counterService.inactiveToActive;
+        this.inactives = this.counterService.activeToInactive;
+      }
+    );
   }
 
-  onSetToActive(id: number) {
-    this.activeUsers.push(this.inactiveUsers[id]);
-    this.inactiveUsers.splice(id, 1);
-  }
 }
